@@ -251,3 +251,52 @@ struct UsageCardScene: View {
     .frame(height: 6)
   }
 }
+
+// MARK: - Shapes
+
+/// Capsule-shaped pill with the beam tracing the rounded ends. Exercises
+/// `.borderBeam(shape: .capsule)` — the SDF falls back to a rounded rect
+/// with cornerRadius = min(width, height) / 2, so no cornerRadius tuning
+/// is needed at the call site.
+struct CapsuleShapeScene: View {
+  var body: some View {
+    DemoCard(title: "Pill", tag: "Medium · Shape .capsule") {
+      ZStack {
+        sceneBackground()
+        Capsule()
+          .fill(sceneSurfaceFill)
+          .frame(width: 260, height: 64)
+          .overlay {
+            HStack(spacing: 10) {
+              Image(systemName: "sparkles")
+                .foregroundStyle(.yellow)
+              Text("Summon the muse")
+                .font(.system(.callout, design: .rounded, weight: .semibold))
+            }
+          }
+          .borderBeam(.medium, palette: .colorful, shape: .capsule)
+      }
+    }
+  }
+}
+
+/// Circular avatar / status ring. Exercises `.borderBeam(shape: .circle)`
+/// with a proper circular SDF (not a rounded-rect approximation).
+struct CircleShapeScene: View {
+  var body: some View {
+    DemoCard(title: "Avatar", tag: "Medium · Shape .circle") {
+      ZStack {
+        sceneBackground()
+        Circle()
+          .fill(sceneSurfaceFill)
+          .frame(width: 140, height: 140)
+          .overlay {
+            Image(systemName: "person.fill")
+              .font(.system(size: 52))
+              .foregroundStyle(.secondary)
+          }
+          .borderBeam(.medium, palette: .ocean, shape: .circle)
+      }
+    }
+  }
+}

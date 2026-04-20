@@ -27,6 +27,12 @@ struct GalleryView: View {
             PremiumCardScene()
             UsageCardScene()
           }
+
+          sectionHeader("Shapes")
+          LazyVGrid(columns: gridColumns, spacing: 20) {
+            CapsuleShapeScene()
+            CircleShapeScene()
+          }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
