@@ -373,9 +373,12 @@ struct PulseScene: View {
           } label: {
             Label("Send message", systemImage: "paperplane.fill")
               .font(.caption.weight(.semibold))
+              .foregroundStyle(.white)
+              .padding(.horizontal, 14)
+              .padding(.vertical, 8)
+              .background(Color.blue, in: Capsule())
           }
-          .buttonStyle(.borderedProminent)
-          .controlSize(.small)
+          .buttonStyle(.plain)
         }
       }
     }
