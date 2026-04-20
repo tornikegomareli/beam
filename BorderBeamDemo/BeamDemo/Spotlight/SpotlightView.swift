@@ -27,6 +27,14 @@ struct SpotlightView: View {
   @State private var lensStrength: Double = 6
   @State private var active: Bool = true
   @State private var pulseCount: Int = 0
+  @State private var fillSubject: FillSubject = .text
+  @State private var symbolIndex: Int = 0
+
+  /// SF Symbols cycled in Fill → Symbol mode. Chosen for recognizable
+  /// shapes with plenty of interior area so the palette wash is visible.
+  private static let fillSymbols: [String] = [
+    "sparkles", "wand.and.stars", "bolt.fill", "heart.fill", "star.fill"
+  ]
 
   var body: some View {
     ZStack {
@@ -46,9 +54,15 @@ struct SpotlightView: View {
           lensStrength: lensStrength,
           active: active,
           pulseCount: pulseCount,
+          fillSubject: fillSubject,
+          fillSymbol: Self.fillSymbols[symbolIndex % Self.fillSymbols.count],
           onTap: { pulseCount += 1 }
         )
         .frame(maxWidth: 520, maxHeight: 220)
+
+        if mode == .fill {
+          fillSubjectPicker
+        }
 
         Spacer(minLength: 12)
 
@@ -62,7 +76,9 @@ struct SpotlightView: View {
           strength: strength,
           duration: speed,
           lensStrength: lensStrength,
-          active: active
+          active: active,
+          fillSubject: fillSubject,
+          fillSymbol: Self.fillSymbols[symbolIndex % Self.fillSymbols.count]
         )
         .frame(maxWidth: 640)
       }
@@ -72,6 +88,55 @@ struct SpotlightView: View {
     .navigationTitle("Spotlight")
     .navigationBarTitleDisplayMode(.inline)
     .toolbarBackground(.hidden, for: .navigationBar)
+  }
+
+  /// Small picker that only appears in Fill mode. Toggles the hero
+  /// between the "BEAM" text glyphs and an SF Symbol, and when Symbol is
+  /// selected lets the user cycle through a few representative symbols
+  /// so both surfaces get demonstrated.
+  private var fillSubjectPicker: some View {
+    HStack(spacing: 10) {
+      ForEach(FillSubject.allCases) { subject in
+        Button { withAnimation(.snappy) { fillSubject = subject } } label: {
+          HStack(spacing: 6) {
+            Image(systemName: subject.icon)
+              .font(.caption2)
+            Text(subject.title)
+              .font(.caption.weight(.semibold))
+          }
+          .padding(.horizontal, 14)
+          .padding(.vertical, 8)
+          .foregroundStyle(fillSubject == subject ? .black : .white.opacity(0.7))
+          .background {
+            if fillSubject == subject {
+              Capsule().fill(.white)
+            } else {
+              Capsule().stroke(.white.opacity(0.18), lineWidth: 0.5)
+            }
+          }
+        }
+        .buttonStyle(.plain)
+      }
+
+      if fillSubject == .symbol {
+        Button {
+          withAnimation(.snappy) {
+            symbolIndex = (symbolIndex + 1) % Self.fillSymbols.count
+          }
+        } label: {
+          Label("Next", systemImage: "arrow.clockwise")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.7))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background {
+              Capsule().stroke(.white.opacity(0.18), lineWidth: 0.5)
+            }
+        }
+        .buttonStyle(.plain)
+        .transition(.scale.combined(with: .opacity))
+      }
+    }
   }
 
   private var modeTabs: some View {
@@ -243,6 +308,28 @@ enum SpotlightMode: String, CaseIterable, Identifiable {
   var usesShape: Bool { self == .beam || self == .comet || self == .pulse }
 }
 
+/// What the hero shows in Fill mode: text glyphs or an SF Symbol.
+/// Both exercise the same `.beamFill(...)` modifier; the only difference
+/// is the receiver view.
+enum FillSubject: String, CaseIterable, Identifiable {
+  case text, symbol
+  var id: String { rawValue }
+
+  var title: String {
+    switch self {
+    case .text:   return "Text"
+    case .symbol: return "Symbol"
+    }
+  }
+
+  var icon: String {
+    switch self {
+    case .text:   return "textformat"
+    case .symbol: return "sparkles"
+    }
+  }
+}
+
 enum SpotlightShape: String, CaseIterable, Identifiable {
   case roundedRect, capsule, circle
   var id: String { rawValue }
@@ -291,6 +378,8 @@ private struct SpotlightHero: View {
   let lensStrength: Double
   let active: Bool
   let pulseCount: Int
+  let fillSubject: FillSubject
+  let fillSymbol: String
   let onTap: () -> Void
 
   var body: some View {
@@ -299,6 +388,8 @@ private struct SpotlightHero: View {
       .onTapGesture { onTap() }
       .animation(.snappy(duration: 0.35), value: mode)
       .animation(.snappy(duration: 0.35), value: shape)
+      .animation(.snappy(duration: 0.35), value: fillSubject)
+      .animation(.snappy(duration: 0.35), value: fillSymbol)
   }
 
   @ViewBuilder
@@ -347,19 +438,34 @@ private struct SpotlightHero: View {
       )
   }
 
-  // MARK: Fill mode — big letter glyphs
+  // MARK: Fill mode — big letter glyphs OR SF Symbol
 
+  @ViewBuilder
   private var fillHero: some View {
-    Text("BEAM")
-      .font(.system(size: 120, weight: .black, design: .rounded))
-      .tracking(4)
-      .beamFill(
-        palette: palette,
-        active: active,
-        duration: duration,
-        strength: strength
-      )
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
+    switch fillSubject {
+    case .text:
+      Text("BEAM")
+        .font(.system(size: 120, weight: .black, design: .rounded))
+        .tracking(4)
+        .beamFill(
+          palette: palette,
+          active: active,
+          duration: duration,
+          strength: strength
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    case .symbol:
+      Image(systemName: fillSymbol)
+        .font(.system(size: 180, weight: .semibold))
+        .symbolRenderingMode(.monochrome)
+        .beamFill(
+          palette: palette,
+          active: active,
+          duration: duration,
+          strength: strength
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
   }
 
   // MARK: Lens mode — dot grid card so distortion reads
@@ -620,6 +726,8 @@ private struct CodeSnippetView: View {
   let duration: Double
   let lensStrength: Double
   let active: Bool
+  let fillSubject: FillSubject
+  let fillSymbol: String
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
@@ -665,10 +773,18 @@ private struct CodeSnippetView: View {
         args: baseArgs(size: ".comet") + shapeArg + durationArg + strengthArg + activeArg
       ))
     case .fill:
-      Text(functionCall(
-        name: "beamFill",
-        args: baseArgs(size: nil) + durationArg + strengthArg + activeArg
-      ))
+      // Fill is the only mode where the receiver matters a lot — call
+      // it out in the snippet so the reader knows `beamFill` works on
+      // both `Text` and `Image(systemName:)`.
+      VStack(alignment: .leading, spacing: 4) {
+        Text(fillReceiverLine)
+          .foregroundStyle(Color(white: 0.55))
+        Text("  ")
+          + Text(functionCall(
+            name: "beamFill",
+            args: baseArgs(size: nil) + durationArg + strengthArg + activeArg
+          ))
+      }
     case .lens:
       Text(functionCall(
         name: "beam",
@@ -756,6 +872,21 @@ private struct CodeSnippetView: View {
 
   private var lensArg: [(String, String)] {
     [("lensStrength", String(Int(lensStrength)))]
+  }
+
+  /// Receiver line above the `.beamFill(...)` call so the snippet reads
+  /// like a real code sample. Matches the hero's current subject.
+  private var fillReceiverLine: AttributedString {
+    switch fillSubject {
+    case .text:
+      var s = AttributedString("Text(\"BEAM\")")
+      s.foregroundColor = Color(white: 0.85)
+      return s
+    case .symbol:
+      var s = AttributedString("Image(systemName: \"\(fillSymbol)\")")
+      s.foregroundColor = Color(white: 0.85)
+      return s
+    }
   }
 }
 
