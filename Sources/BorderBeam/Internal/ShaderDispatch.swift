@@ -36,7 +36,8 @@ enum ShaderDispatch {
     inkAlphaScale: Double,
     hueCos: Double,
     hueSin: Double,
-    paletteScale: Double
+    paletteScale: Double,
+    shapeType: Int
   ) -> Shader {
     let function = ShaderFunction(
       library: .bundle(.module),
@@ -72,12 +73,12 @@ enum ShaderDispatch {
         Float(innerShadowAlpha),
         Float(inkAlphaScale)
       ),
-      // hueAndScale: cos, sin, paletteScale, reserved
+      // hueAndScale: cos, sin, paletteScale, shapeType
       .float4(
         Float(hueCos),
         Float(hueSin),
         Float(paletteScale),
-        0
+        Float(shapeType)
       ),
     ]
     return Shader(function: function, arguments: args)
