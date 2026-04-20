@@ -623,29 +623,31 @@ private struct CodeSnippetView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      HStack(spacing: 6) {
-        Circle().fill(Color(red: 1, green: 0.37, blue: 0.37)).frame(width: 10, height: 10)
-        Circle().fill(Color(red: 1, green: 0.80, blue: 0.24)).frame(width: 10, height: 10)
-        Circle().fill(Color(red: 0.20, green: 0.80, blue: 0.40)).frame(width: 10, height: 10)
+      HStack(spacing: 8) {
+        Circle().fill(Color(red: 1, green: 0.37, blue: 0.37)).frame(width: 12, height: 12)
+        Circle().fill(Color(red: 1, green: 0.80, blue: 0.24)).frame(width: 12, height: 12)
+        Circle().fill(Color(red: 0.20, green: 0.80, blue: 0.40)).frame(width: 12, height: 12)
         Spacer()
         Text("swift")
-          .font(.caption2.monospaced())
-          .foregroundStyle(.white.opacity(0.35))
+          .font(.callout.monospaced())
+          .foregroundStyle(.white.opacity(0.45))
       }
-      .padding(.horizontal, 14)
-      .padding(.vertical, 10)
+      .padding(.horizontal, 18)
+      .padding(.vertical, 14)
 
-      Divider().background(.white.opacity(0.06))
+      Divider().background(.white.opacity(0.08))
 
       snippet
-        .font(.system(size: 13, design: .monospaced))
-        .padding(16)
+        .font(.system(size: 18, weight: .medium, design: .monospaced))
+        .textSelection(.enabled)
+        .padding(22)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
     }
-    .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+    .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16))
     .overlay {
-      RoundedRectangle(cornerRadius: 14)
-        .stroke(.white.opacity(0.06), lineWidth: 0.5)
+      RoundedRectangle(cornerRadius: 16)
+        .stroke(.white.opacity(0.08), lineWidth: 0.5)
     }
   }
 
@@ -681,14 +683,24 @@ private struct CodeSnippetView: View {
   }
 
   private func functionCall(name: String, args: [(String, String)]) -> AttributedString {
+    // Pretty-print as multi-line when there are enough args to benefit
+    // from one-arg-per-line formatting. Short calls stay on one line.
+    let multiline = args.count > 2
+
     var s = AttributedString(".\(name)(")
     s.foregroundColor = Color(white: 0.92)
+
     for (i, arg) in args.enumerated() {
-      if i > 0 {
+      if multiline {
+        var nl = AttributedString(i == 0 ? "\n  " : ",\n  ")
+        nl.foregroundColor = Color(white: 0.55)
+        s += nl
+      } else if i > 0 {
         var comma = AttributedString(", ")
         comma.foregroundColor = Color(white: 0.55)
         s += comma
       }
+
       if !arg.0.isEmpty {
         var label = AttributedString("\(arg.0): ")
         label.foregroundColor = Color(red: 0.58, green: 0.80, blue: 1.00)
@@ -700,9 +712,16 @@ private struct CodeSnippetView: View {
         : Color(red: 0.75, green: 0.95, blue: 0.55)
       s += val
     }
-    var closing = AttributedString(")")
-    closing.foregroundColor = Color(white: 0.92)
-    s += closing
+
+    if multiline {
+      var trailing = AttributedString("\n)")
+      trailing.foregroundColor = Color(white: 0.92)
+      s += trailing
+    } else {
+      var closing = AttributedString(")")
+      closing.foregroundColor = Color(white: 0.92)
+      s += closing
+    }
     return s
   }
 
