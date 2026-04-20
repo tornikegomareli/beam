@@ -43,6 +43,7 @@ struct GalleryView: View {
           sectionHeader("Motion")
           LazyVGrid(columns: gridColumns, spacing: 20) {
             CometCardScene()
+            PulseScene()
           }
         }
         .padding(.horizontal, 24)

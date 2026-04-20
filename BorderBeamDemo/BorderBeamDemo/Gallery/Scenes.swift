@@ -337,6 +337,51 @@ struct SymbolGlyphScene: View {
 
 // MARK: - Motion
 
+/// One-shot pulse triggered by a counter increment. Tap the button and the
+/// comet fires a single lap, then fades out. Demonstrates the `pulse:`
+/// parameter as the canonical "thing happened" affordance — a sent
+/// message, a saved file, a completed task.
+struct PulseScene: View {
+  @State private var sendCount: Int = 0
+
+  var body: some View {
+    DemoCard(title: "Pulse", tag: "Comet · pulse on tap") {
+      ZStack {
+        sceneBackground()
+        VStack(spacing: 14) {
+          RoundedRectangle(cornerRadius: 20)
+            .fill(sceneSurfaceFill)
+            .frame(height: 108)
+            .overlay {
+              VStack(spacing: 4) {
+                Text("Messages")
+                  .font(.caption.weight(.medium))
+                  .foregroundStyle(.secondary)
+                Text("\(sendCount)")
+                  .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                  .contentTransition(.numericText())
+                Text("delivered")
+                  .font(.caption)
+                  .foregroundStyle(.tertiary)
+              }
+            }
+            .borderBeam(.comet, palette: .colorful, active: false, cornerRadius: 20, pulse: sendCount)
+            .padding(.horizontal, 20)
+
+          Button {
+            sendCount += 1
+          } label: {
+            Label("Send message", systemImage: "paperplane.fill")
+              .font(.caption.weight(.semibold))
+          }
+          .buttonStyle(.borderedProminent)
+          .controlSize(.small)
+        }
+      }
+    }
+  }
+}
+
 /// Comet variant — a bright head chasing its own trail around the card.
 /// Contrast this against `AIPromptScene` (medium arc on a similar card)
 /// to see the difference: the comet is a single point in motion, the
