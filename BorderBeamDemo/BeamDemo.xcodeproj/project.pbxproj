@@ -8,16 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		9E3C172C2F94631B0044FCD7 /* Beam in Frameworks */ = {isa = PBXBuildFile; productRef = 9E3C172B2F94631B0044FCD7 /* Beam */; };
+		9EB02FAD2F967A1D002ABD75 /* Beam in Frameworks */ = {isa = PBXBuildFile; productRef = 9EB02FAC2F967A1D002ABD75 /* Beam */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9E3C171C2F9462620044FCD7 /* BorderBeamDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BorderBeamDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E3C171C2F9462620044FCD7 /* BeamDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeamDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9E3C171E2F9462620044FCD7 /* BorderBeamDemo */ = {
+		9E3C171E2F9462620044FCD7 /* BeamDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BorderBeamDemo;
+			path = BeamDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E3C172C2F94631B0044FCD7 /* Beam in Frameworks */,
+				9EB02FAD2F967A1D002ABD75 /* Beam in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,7 +39,7 @@
 		9E3C17132F9462620044FCD7 = {
 			isa = PBXGroup;
 			children = (
-				9E3C171E2F9462620044FCD7 /* BorderBeamDemo */,
+				9E3C171E2F9462620044FCD7 /* BeamDemo */,
 				9E3C171D2F9462620044FCD7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -45,7 +47,7 @@
 		9E3C171D2F9462620044FCD7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9E3C171C2F9462620044FCD7 /* BorderBeamDemo.app */,
+				9E3C171C2F9462620044FCD7 /* BeamDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,9 +55,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9E3C171B2F9462620044FCD7 /* BorderBeamDemo */ = {
+		9E3C171B2F9462620044FCD7 /* BeamDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9E3C17272F9462630044FCD7 /* Build configuration list for PBXNativeTarget "BorderBeamDemo" */;
+			buildConfigurationList = 9E3C17272F9462630044FCD7 /* Build configuration list for PBXNativeTarget "BeamDemo" */;
 			buildPhases = (
 				9E3C17182F9462620044FCD7 /* Sources */,
 				9E3C17192F9462620044FCD7 /* Frameworks */,
@@ -66,14 +68,15 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				9E3C171E2F9462620044FCD7 /* BorderBeamDemo */,
+				9E3C171E2F9462620044FCD7 /* BeamDemo */,
 			);
-			name = BorderBeamDemo;
+			name = BeamDemo;
 			packageProductDependencies = (
 				9E3C172B2F94631B0044FCD7 /* Beam */,
+				9EB02FAC2F967A1D002ABD75 /* Beam */,
 			);
 			productName = BorderBeamDemo;
-			productReference = 9E3C171C2F9462620044FCD7 /* BorderBeamDemo.app */;
+			productReference = 9E3C171C2F9462620044FCD7 /* BeamDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -91,7 +94,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9E3C17172F9462620044FCD7 /* Build configuration list for PBXProject "BorderBeamDemo" */;
+			buildConfigurationList = 9E3C17172F9462620044FCD7 /* Build configuration list for PBXProject "BeamDemo" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -101,14 +104,14 @@
 			mainGroup = 9E3C17132F9462620044FCD7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				9E3C172A2F94631B0044FCD7 /* XCLocalSwiftPackageReference "../../beam" */,
+				9EB02FAB2F967A1D002ABD75 /* XCLocalSwiftPackageReference "../../beam" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9E3C171D2F9462620044FCD7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9E3C171B2F9462620044FCD7 /* BorderBeamDemo */,
+				9E3C171B2F9462620044FCD7 /* BeamDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -322,7 +325,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9E3C17172F9462620044FCD7 /* Build configuration list for PBXProject "BorderBeamDemo" */ = {
+		9E3C17172F9462620044FCD7 /* Build configuration list for PBXProject "BeamDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9E3C17252F9462630044FCD7 /* Debug */,
@@ -331,7 +334,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9E3C17272F9462630044FCD7 /* Build configuration list for PBXNativeTarget "BorderBeamDemo" */ = {
+		9E3C17272F9462630044FCD7 /* Build configuration list for PBXNativeTarget "BeamDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9E3C17282F9462630044FCD7 /* Debug */,
@@ -343,7 +346,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		9E3C172A2F94631B0044FCD7 /* XCLocalSwiftPackageReference "../../beam" */ = {
+		9EB02FAB2F967A1D002ABD75 /* XCLocalSwiftPackageReference "../../beam" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../beam;
 		};
@@ -351,6 +354,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		9E3C172B2F94631B0044FCD7 /* Beam */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Beam;
+		};
+		9EB02FAC2F967A1D002ABD75 /* Beam */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Beam;
 		};
