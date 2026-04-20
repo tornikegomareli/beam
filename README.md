@@ -143,4 +143,4 @@ Open `BorderBeamDemo/BeamDemo.xcodeproj`, pick a simulator, run.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
