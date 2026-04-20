@@ -10,6 +10,7 @@ struct PlaygroundView: View {
   @State private var theme: BorderBeamTheme = .dark
   @State private var active: Bool = true
   @State private var strength: Double = 1.0
+  @State private var snapshotPhase: Double = 0.5
 
   var body: some View {
     NavigationStack {
@@ -29,6 +30,9 @@ struct PlaygroundView: View {
             }
           }
           .frame(maxWidth: 600)
+
+          snapshotSection
+            .frame(maxWidth: 600)
 
           Spacer(minLength: 20)
         }
@@ -84,6 +88,48 @@ struct PlaygroundView: View {
     .padding(16)
     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
     .frame(maxWidth: 600)
+  }
+
+  private var snapshotSection: some View {
+    VStack(alignment: .leading, spacing: 16) {
+      HStack {
+        Text("Snapshot (widget mode)")
+          .font(.caption.monospaced().weight(.medium))
+          .foregroundStyle(.tertiary)
+          .textCase(.uppercase)
+          .tracking(1.0)
+        Spacer()
+        Text("phase \(String(format: "%.2f", snapshotPhase))")
+          .font(.caption.monospaced())
+          .foregroundStyle(.tertiary)
+      }
+
+      Slider(value: $snapshotPhase, in: 0...1)
+
+      RoundedRectangle(cornerRadius: 16)
+        .fill(theme == .dark ? Color(white: 0.08) : Color(white: 0.95))
+        .frame(height: 90)
+        .overlay(alignment: .leading) {
+          Text("Static frame at phase \(String(format: "%.2f", snapshotPhase))")
+            .foregroundStyle(.secondary)
+            .padding(.leading, 20)
+        }
+        .borderBeam(.medium, palette: palette, theme: theme, phase: snapshotPhase, cornerRadius: 16, strength: strength)
+
+      HStack(spacing: 16) {
+        ForEach([0.00, 0.25, 0.50, 0.75], id: \.self) { p in
+          RoundedRectangle(cornerRadius: 18)
+            .fill(theme == .dark ? Color(white: 0.08) : Color(white: 0.95))
+            .frame(height: 36)
+            .overlay {
+              Text(String(format: "%.2f", p))
+                .font(.caption.monospaced())
+                .foregroundStyle(.secondary)
+            }
+            .borderBeam(.small, palette: palette, theme: theme, phase: p, cornerRadius: 18, strength: strength)
+        }
+      }
+    }
   }
 
   @ViewBuilder
