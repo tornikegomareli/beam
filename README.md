@@ -8,8 +8,7 @@ One SwiftUI modifier. Every `View` gets a shifting, palette-driven beautiful bea
 
 <br>
 
-<!-- HERO VIDEO — replace with uploaded asset URL -->
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_HERO -->
+https://github.com/user-attachments/assets/5b7fb2d5-a89e-40cb-98d5-d2164adf47a9
 
 </div>
 
