@@ -92,4 +92,32 @@ enum ShaderDispatch {
     case .comet:  return "borderBeamComet"
     }
   }
+
+  /// Builds the distortion shader used by `.beamLens` / `lensStrength:`.
+  /// Uses its own tiny uniform bundle — the lens doesn't need palette,
+  /// theme, or opacity inputs, so we don't force it to share the main
+  /// shader's ABI.
+  static func lensShader(
+    pixelSize: CGSize,
+    time: TimeInterval,
+    duration: Double,
+    strength: Double
+  ) -> Shader {
+    let function = ShaderFunction(library: .bundle(.module), name: "beamLens")
+    let args: [Shader.Argument] = [
+      .float4(
+        Float(pixelSize.width),
+        Float(pixelSize.height),
+        Float(strength),
+        0
+      ),
+      .float4(
+        Float(time),
+        Float(duration),
+        0,
+        0
+      ),
+    ]
+    return Shader(function: function, arguments: args)
+  }
 }
