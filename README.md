@@ -4,12 +4,6 @@
 
 **Animated beams for SwiftUI, backed with Metal Shaders.**
 
-[![Swift 5.9+](https://img.shields.io/badge/Swift-5.9+-F05138.svg?style=flat&logo=swift&logoColor=white)](https://swift.org)
-[![iOS 17+](https://img.shields.io/badge/iOS-17%2B-007AFF.svg?style=flat&logo=apple&logoColor=white)](https://developer.apple.com/ios/)
-[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-007AFF.svg?style=flat&logo=apple&logoColor=white)](https://developer.apple.com/macos/)
-[![SPM](https://img.shields.io/badge/Swift_Package_Manager-compatible-E8E2D6.svg?style=flat)](https://swift.org/package-manager/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-A78BFA.svg?style=flat)](LICENSE)
-
 One SwiftUI modifier. Every `View` gets a shifting, palette-driven beautiful beam traveling its border.
 
 <br>
