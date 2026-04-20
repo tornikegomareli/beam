@@ -45,6 +45,11 @@ struct GalleryView: View {
             CometCardScene()
             PulseScene()
           }
+
+          sectionHeader("Materials")
+          LazyVGrid(columns: gridColumns, spacing: 20) {
+            LensScene()
+          }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 28)

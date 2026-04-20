@@ -382,6 +382,54 @@ struct PulseScene: View {
   }
 }
 
+/// Liquid-glass lensing — the card's pixels push outward as the beam
+/// head passes over them, selling the illusion of a moving glass lens.
+/// Works on top of any content; here a dense grid of dots makes the
+/// distortion immediately visible.
+struct LensScene: View {
+  var body: some View {
+    DemoCard(title: "Glass lens", tag: "Medium · lensStrength 6") {
+      ZStack {
+        sceneBackground()
+        RoundedRectangle(cornerRadius: 20)
+          .fill(sceneSurfaceFill)
+          .frame(height: 148)
+          .overlay {
+            DotGrid()
+              .foregroundStyle(.white.opacity(0.35))
+              .padding(14)
+          }
+          .borderBeam(.medium, palette: .mono, cornerRadius: 20, lensStrength: 6)
+          .padding(18)
+      }
+    }
+  }
+}
+
+/// Dense dot grid used as lens backdrop — makes even a 3–6 px offset
+/// obvious because the dots visibly displace as the beam passes over.
+private struct DotGrid: View {
+  var body: some View {
+    Canvas { context, size in
+      let spacing: CGFloat = 10
+      let dotSize: CGFloat = 2
+      let cols = Int(size.width / spacing)
+      let rows = Int(size.height / spacing)
+      for r in 0...rows {
+        for c in 0...cols {
+          let rect = CGRect(
+            x: CGFloat(c) * spacing - dotSize / 2,
+            y: CGFloat(r) * spacing - dotSize / 2,
+            width: dotSize,
+            height: dotSize
+          )
+          context.fill(Path(ellipseIn: rect), with: .color(.white.opacity(0.35)))
+        }
+      }
+    }
+  }
+}
+
 /// Comet variant — a bright head chasing its own trail around the card.
 /// Contrast this against `AIPromptScene` (medium arc on a similar card)
 /// to see the difference: the comet is a single point in motion, the
