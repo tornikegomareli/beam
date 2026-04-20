@@ -19,6 +19,7 @@ struct ContentView: View {
   private var sidebar: some View {
     List(selection: $selection) {
       Section {
+        row(.spotlight)
         row(.gallery)
       }
       Section("Showcases") {
@@ -38,6 +39,7 @@ struct ContentView: View {
   @ViewBuilder
   private var detail: some View {
     switch selection {
+    case .spotlight:  SpotlightView()
     case .gallery:    GalleryView()
     case .composer:   ComposerShowcase()
     case .search:     SearchShowcase()
@@ -58,6 +60,7 @@ struct ContentView: View {
 }
 
 enum SidebarItem: String, Hashable, CaseIterable {
+  case spotlight
   case gallery
   case composer
   case search
@@ -67,6 +70,7 @@ enum SidebarItem: String, Hashable, CaseIterable {
 
   var title: String {
     switch self {
+    case .spotlight:  return "Spotlight"
     case .gallery:    return "Gallery"
     case .composer:   return "AI Composer"
     case .search:     return "Search"
@@ -78,6 +82,7 @@ enum SidebarItem: String, Hashable, CaseIterable {
 
   var icon: String {
     switch self {
+    case .spotlight:  return "sparkle"
     case .gallery:    return "square.grid.2x2.fill"
     case .composer:   return "sparkles"
     case .search:     return "magnifyingglass"
