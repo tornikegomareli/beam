@@ -6,28 +6,28 @@ import CoreGraphics
 /// ```swift
 /// RoundedRectangle(cornerRadius: 22)
 ///     .fill(.regularMaterial)
-///     .borderBeam(shape: .roundedRect(cornerRadius: 22))
+///     .beam(shape: .roundedRect(cornerRadius: 22))
 ///
 /// Capsule()
 ///     .fill(.regularMaterial)
-///     .borderBeam(shape: .capsule)
+///     .beam(shape: .capsule)
 ///
 /// Circle()
 ///     .fill(.regularMaterial)
 ///     .frame(width: 120, height: 120)
-///     .borderBeam(.small, shape: .circle)
+///     .beam(.small, shape: .circle)
 /// ```
 ///
 /// `.circle` traces the inscribed circle of the view's bounds, so the view
 /// should be square. On non-square frames the beam still traces the largest
 /// circle that fits and the non-circle area stays unlit.
-public enum BorderBeamShape: Equatable, Sendable {
+public enum BeamShape: Equatable, Sendable {
   case roundedRect(cornerRadius: CGFloat)
   case capsule
   case circle
 }
 
-extension BorderBeamShape {
+extension BeamShape {
   /// Integer id matching the shader's `shapeType` uniform.
   var shaderID: Int {
     switch self {

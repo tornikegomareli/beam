@@ -5,8 +5,8 @@ import Foundation
 /// into a traveling multi-hue gradient.
 ///
 /// The raw values are part of the shader's ABI — don't renumber these cases
-/// without updating the corresponding palette indices in `BorderBeam.metal`.
-public enum BorderBeamPalette: Int, CaseIterable, Sendable {
+/// without updating the corresponding palette indices in `Beam.metal`.
+public enum BeamPalette: Int, CaseIterable, Sendable {
   /// Full-spectrum multi-hue beam: pink, blue, green, purple, orange, magenta.
   case colorful = 0
 

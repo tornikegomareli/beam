@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-  name: "BorderBeam",
+  name: "Beam",
   platforms: [
     .iOS(.v17),
     .macOS(.v14),
   ],
   products: [
-    .library(name: "BorderBeam", targets: ["BorderBeam"]),
+    .library(name: "Beam", targets: ["Beam"]),
   ],
   targets: [
     .target(
-      name: "BorderBeam",
+      name: "Beam",
       resources: [
         .process("Shaders/Medium.metal"),
         .process("Shaders/Small.metal"),

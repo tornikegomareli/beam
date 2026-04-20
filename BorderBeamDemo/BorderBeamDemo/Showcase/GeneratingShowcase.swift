@@ -1,5 +1,5 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 /// Interactive demo of the fade-in / fade-out lifecycle and the `active`
 /// binding. Tapping Generate flips the beam on, streams a mocked response
@@ -27,7 +27,7 @@ struct GeneratingShowcase: View {
 
         streamingCard
           .frame(height: 220)
-          .borderBeam(
+          .beam(
             .medium,
             palette: .colorful,
             active: isGenerating,
@@ -99,7 +99,7 @@ struct GeneratingShowcase: View {
         .background(showcaseElevatedFill, in: Capsule())
       }
       .buttonStyle(.plain)
-      .borderBeam(.small, palette: .sunset, active: isGenerating, cornerRadius: 23)
+      .beam(.small, palette: .sunset, active: isGenerating, cornerRadius: 23)
 
       Button(action: reset) {
         Text("Reset")

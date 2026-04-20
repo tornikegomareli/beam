@@ -8,13 +8,13 @@ public extension View {
   /// ```swift
   /// RoundedRectangle(cornerRadius: 16)
   ///     .fill(.regularMaterial)
-  ///     .borderBeam()                                // default: medium, colorful, dark
+  ///     .beam()                                // default: medium, colorful, dark
   ///
   /// Button("Generate") { ... }
-  ///     .borderBeam(.small, palette: .ocean)
+  ///     .beam(.small, palette: .ocean)
   ///
   /// SearchField(...)
-  ///     .borderBeam(.line, palette: .sunset, active: isSearching)
+  ///     .beam(.line, palette: .sunset, active: isSearching)
   /// ```
   ///
   /// - Parameters:
@@ -51,12 +51,12 @@ public extension View {
   ///     Reduce Motion is on and the beam snaps in).
   ///   - onDeactivate: called when the fade-out completes (or immediately
   ///     when Reduce Motion is on and the beam snaps out).
-  func borderBeam(
-    _ size: BorderBeamSize = .medium,
-    palette: BorderBeamPalette = .colorful,
-    theme: BorderBeamTheme = .dark,
+  func beam(
+    _ size: BeamSize = .medium,
+    palette: BeamPalette = .colorful,
+    theme: BeamTheme = .dark,
     active: Bool = true,
-    shape: BorderBeamShape? = nil,
+    shape: BeamShape? = nil,
     cornerRadius: CGFloat? = nil,
     duration: Double? = nil,
     strength: Double = 1.0,
@@ -69,7 +69,7 @@ public extension View {
     let fallbackRadius = cornerRadius ?? (size == .small ? 18 : 16)
     let resolvedShape = shape ?? .roundedRect(cornerRadius: fallbackRadius)
     let resolvedDuration = duration ?? (size == .line ? 2.4 : 1.96)
-    return modifier(BorderBeamModifier(
+    return modifier(BeamModifier(
       size: size,
       palette: palette,
       shape: resolvedShape,
@@ -88,18 +88,18 @@ public extension View {
 
 // MARK: - ViewModifier
 
-/// Implementation detail of `.borderBeam(...)`. Owns the fade-in/out
+/// Implementation detail of `.beam(...)`. Owns the fade-in/out
 /// lifecycle state and drives the Metal shader via a `TimelineView`.
 ///
 /// The modifier collapses the shader's many individual uniforms into a
 /// single `ThemePresets` bundle at construction time so the stored
 /// property count stays manageable. Per-frame uniforms (time, hue) are
 /// computed inside the `TimelineView` closure.
-struct BorderBeamModifier: ViewModifier {
+struct BeamModifier: ViewModifier {
   // Immutable configuration
-  let size: BorderBeamSize
-  let palette: BorderBeamPalette
-  let shape: BorderBeamShape
+  let size: BeamSize
+  let palette: BeamPalette
+  let shape: BeamShape
   /// Corner radius the shader reads for capsule/circle shapes. The shader
   /// doesn't use it in those cases, but we still forward a sensible number
   /// rather than leaving the uniform lane undefined.
@@ -288,8 +288,8 @@ struct BorderBeamModifier: ViewModifier {
     // out at both extrema without needing a piecewise tween. The beam's hue
     // sweeps across `±hueRangeDeg` once per `hueCycleSeconds`:
     //   t=0 → -30°,   t=6s → +30°,   t=12s → -30°
-    let hueShiftDeg = -BorderBeamTiming.hueRangeDeg
-    * cos((time / BorderBeamTiming.hueCycleSeconds) * 2.0 * .pi)
+    let hueShiftDeg = -BeamTiming.hueRangeDeg
+    * cos((time / BeamTiming.hueCycleSeconds) * 2.0 * .pi)
     let hueShiftRad = hueShiftDeg * .pi / 180.0
 
     // The rotation angle is uniform across the draw, so precompute cos/sin
@@ -301,7 +301,7 @@ struct BorderBeamModifier: ViewModifier {
     // (~370×144 for medium). Grow them with the card's shorter dimension so
     // spots stay visually dense on large iPad cards. Clamped at 1.0 so small
     // cards don't shrink below the reference tuning.
-    let paletteScale = BorderBeamTiming.paletteScale(size: size, pixelSize: pixelSize)
+    let paletteScale = BeamTiming.paletteScale(size: size, pixelSize: pixelSize)
 
     return ShaderDispatch.shader(
       size: size,
@@ -314,7 +314,7 @@ struct BorderBeamModifier: ViewModifier {
       innerOpacity: presets.innerOpacity * monoMultiplier,
       bloomOpacity: presets.bloomOpacity * monoMultiplier,
       strength: strength,
-      brightness: BorderBeamTiming.brightness,
+      brightness: BeamTiming.brightness,
       saturation: presets.saturation,
       variant: Float(palette.rawValue),
       inkLuma: presets.inkLuma,
@@ -333,7 +333,7 @@ struct BorderBeamModifier: ViewModifier {
 /// Timing and tuning values that are shared across every beam instance. Kept
 /// as a single namespace so contributors adjusting the feel of the animation
 /// have one obvious place to look.
-private enum BorderBeamTiming {
+private enum BeamTiming {
   /// Half-range of the hue oscillation in degrees. The beam's hue sweeps
   /// `-hueRangeDeg ↔ +hueRangeDeg` once per `hueCycleSeconds`.
   static let hueRangeDeg: Double = 30
@@ -353,7 +353,7 @@ private enum BorderBeamTiming {
   ///
   /// The reference is the card size used in the Gallery scenes — the only
   /// place the palette was hand-tuned side-by-side with the React original.
-  static func paletteScale(size: BorderBeamSize, pixelSize: CGSize) -> Double {
+  static func paletteScale(size: BeamSize, pixelSize: CGSize) -> Double {
     let reference: Double
     switch size {
     case .medium, .comet: reference = 144

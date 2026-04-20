@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9E3C172C2F94631B0044FCD7 /* BorderBeam in Frameworks */ = {isa = PBXBuildFile; productRef = 9E3C172B2F94631B0044FCD7 /* BorderBeam */; };
+		9E3C172C2F94631B0044FCD7 /* Beam in Frameworks */ = {isa = PBXBuildFile; productRef = 9E3C172B2F94631B0044FCD7 /* Beam */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E3C172C2F94631B0044FCD7 /* BorderBeam in Frameworks */,
+				9E3C172C2F94631B0044FCD7 /* Beam in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +70,7 @@
 			);
 			name = BorderBeamDemo;
 			packageProductDependencies = (
-				9E3C172B2F94631B0044FCD7 /* BorderBeam */,
+				9E3C172B2F94631B0044FCD7 /* Beam */,
 			);
 			productName = BorderBeamDemo;
 			productReference = 9E3C171C2F9462620044FCD7 /* BorderBeamDemo.app */;
@@ -350,9 +350,9 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9E3C172B2F94631B0044FCD7 /* BorderBeam */ = {
+		9E3C172B2F94631B0044FCD7 /* Beam */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = BorderBeam;
+			productName = Beam;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

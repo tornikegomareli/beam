@@ -1,10 +1,10 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 /// Chat-input mock for the `.medium` sample row.
 struct MediumPlaygroundSample: View {
-  let palette: BorderBeamPalette
-  let theme: BorderBeamTheme
+  let palette: BeamPalette
+  let theme: BeamTheme
   let active: Bool
   let strength: Double
 
@@ -17,14 +17,14 @@ struct MediumPlaygroundSample: View {
           .foregroundStyle(.secondary)
           .padding(.leading, 20)
       }
-      .borderBeam(.medium, palette: palette, theme: theme, active: active, cornerRadius: 16, strength: strength)
+      .beam(.medium, palette: palette, theme: theme, active: active, cornerRadius: 16, strength: strength)
   }
 }
 
 /// Compact icon-button mock for the `.small` sample row.
 struct SmallPlaygroundSample: View {
-  let palette: BorderBeamPalette
-  let theme: BorderBeamTheme
+  let palette: BeamPalette
+  let theme: BeamTheme
   let active: Bool
   let strength: Double
 
@@ -37,14 +37,14 @@ struct SmallPlaygroundSample: View {
           .font(.system(size: 12))
           .foregroundStyle(.secondary)
       }
-      .borderBeam(.small, palette: palette, theme: theme, active: active, cornerRadius: 18, strength: strength)
+      .beam(.small, palette: palette, theme: theme, active: active, cornerRadius: 18, strength: strength)
   }
 }
 
 /// Search-field mock for the `.line` sample row.
 struct LinePlaygroundSample: View {
-  let palette: BorderBeamPalette
-  let theme: BorderBeamTheme
+  let palette: BeamPalette
+  let theme: BeamTheme
   let active: Bool
   let strength: Double
 
@@ -60,6 +60,6 @@ struct LinePlaygroundSample: View {
         .foregroundStyle(.secondary)
         .padding(.leading, 12)
       }
-      .borderBeam(.line, palette: palette, theme: theme, active: active, cornerRadius: 16, strength: strength)
+      .beam(.line, palette: palette, theme: theme, active: active, cornerRadius: 16, strength: strength)
   }
 }

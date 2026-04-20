@@ -10,7 +10,7 @@ Adding a new palette is a one-edit change: append a new entry to the
 swift Scripts/GeneratePalettes.swift
 ```
 
-The script walks every `.metal` file under `Sources/BorderBeam/Shaders/`
+The script walks every `.metal` file under `Sources/Beam/Shaders/`
 and rewrites the body of every region delimited by
 
 ```metal
@@ -24,7 +24,7 @@ produces no textual change.
 
 ### Layout contract
 
-The `palettes` array must stay in the same order as `BorderBeamPalette`'s
+The `palettes` array must stay in the same order as `BeamPalette`'s
 enum cases, because the shader indexes its constant tables with
 `variant * N + i` where `variant` comes from the enum's raw value. Adding
 a palette without also adding an enum case (or vice versa) will render

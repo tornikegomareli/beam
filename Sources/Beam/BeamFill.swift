@@ -23,17 +23,17 @@ public extension View {
   ///     .beamFill(palette: .ocean)
   /// ```
   ///
-  /// Distinct from `.borderBeam(...)`, which overlays a traveling beam
+  /// Distinct from `.beam(...)`, which overlays a traveling beam
   /// around the view's edge. This modifier fills the view itself.
   ///
   /// - Parameters:
   ///   - palette: one of `.colorful`, `.mono`, `.ocean`, `.sunset`.
-  ///   - active: fade in/out. Matches `.borderBeam` semantics (0.6 s in,
+  ///   - active: fade in/out. Matches `.beam` semantics (0.6 s in,
   ///     0.5 s out). Reduce Motion snaps without easing.
   ///   - duration: seconds per light-sweep pass. Defaults to `2.4`.
   ///   - strength: overall intensity multiplier in `0...1`.
   func beamFill(
-    palette: BorderBeamPalette = .colorful,
+    palette: BeamPalette = .colorful,
     active: Bool = true,
     duration: Double = 2.4,
     strength: Double = 1.0
@@ -55,7 +55,7 @@ public extension View {
 /// outline), so the fill shows only where the view would have rendered
 /// its foreground.
 private struct BeamFillModifier: ViewModifier {
-  let palette: BorderBeamPalette
+  let palette: BeamPalette
   let duration: Double
   let strength: Double
   let active: Bool

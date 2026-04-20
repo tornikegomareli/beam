@@ -1,5 +1,5 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 // MARK: - Inputs
 
@@ -45,7 +45,7 @@ struct AIPromptScene: View {
             .padding(14)
           }
           .frame(height: 144)
-          .borderBeam(.medium, palette: .colorful, cornerRadius: 18)
+          .beam(.medium, palette: .colorful, cornerRadius: 18)
           .padding(18)
       }
     }
@@ -73,7 +73,7 @@ struct SearchFieldScene: View {
               .font(.system(size: 14))
               .padding(.leading, 14)
             }
-            .borderBeam(.line, palette: .ocean, cornerRadius: 14)
+            .beam(.line, palette: .ocean, cornerRadius: 14)
             .padding(.horizontal, 20)
           Spacer()
         }
@@ -107,7 +107,7 @@ struct GenerateButtonScene: View {
               }
               .foregroundStyle(.primary)
             }
-            .borderBeam(.small, palette: .sunset, active: busy, cornerRadius: 23)
+            .beam(.small, palette: .sunset, active: busy, cornerRadius: 23)
 
           Button(busy ? "Stop" : "Run again") { busy.toggle() }
             .buttonStyle(.plain)
@@ -137,7 +137,7 @@ struct RecordButtonScene: View {
               .fill(recording ? .red : .red.opacity(0.5))
               .frame(width: 22, height: 22)
           }
-          .borderBeam(.small, palette: .mono, active: recording, cornerRadius: 32)
+          .beam(.small, palette: .mono, active: recording, cornerRadius: 32)
 
           Button(recording ? "Stop recording" : "Start recording") { recording.toggle() }
             .buttonStyle(.plain)
@@ -195,7 +195,7 @@ struct PremiumCardScene: View {
             }
             .padding(16)
           }
-          .borderBeam(.medium, palette: .sunset, cornerRadius: 20)
+          .beam(.medium, palette: .sunset, cornerRadius: 20)
           .padding(18)
       }
     }
@@ -233,7 +233,7 @@ struct UsageCardScene: View {
             }
             .padding(16)
           }
-          .borderBeam(.medium, palette: .ocean, cornerRadius: 20)
+          .beam(.medium, palette: .ocean, cornerRadius: 20)
           .padding(18)
       }
     }
@@ -255,7 +255,7 @@ struct UsageCardScene: View {
 // MARK: - Shapes
 
 /// Capsule-shaped pill with the beam tracing the rounded ends. Exercises
-/// `.borderBeam(shape: .capsule)` — the SDF falls back to a rounded rect
+/// `.beam(shape: .capsule)` — the SDF falls back to a rounded rect
 /// with cornerRadius = min(width, height) / 2, so no cornerRadius tuning
 /// is needed at the call site.
 struct CapsuleShapeScene: View {
@@ -274,13 +274,13 @@ struct CapsuleShapeScene: View {
                 .font(.system(.callout, design: .rounded, weight: .semibold))
             }
           }
-          .borderBeam(.medium, palette: .colorful, shape: .capsule)
+          .beam(.medium, palette: .colorful, shape: .capsule)
       }
     }
   }
 }
 
-/// Circular avatar / status ring. Exercises `.borderBeam(shape: .circle)`
+/// Circular avatar / status ring. Exercises `.beam(shape: .circle)`
 /// with a proper circular SDF (not a rounded-rect approximation).
 struct CircleShapeScene: View {
   var body: some View {
@@ -295,7 +295,7 @@ struct CircleShapeScene: View {
               .font(.system(size: 52))
               .foregroundStyle(.secondary)
           }
-          .borderBeam(.medium, palette: .ocean, shape: .circle)
+          .beam(.medium, palette: .ocean, shape: .circle)
       }
     }
   }
@@ -365,7 +365,7 @@ struct PulseScene: View {
                   .foregroundStyle(.tertiary)
               }
             }
-            .borderBeam(.comet, palette: .colorful, active: false, cornerRadius: 20, pulse: sendCount)
+            .beam(.comet, palette: .colorful, active: false, cornerRadius: 20, pulse: sendCount)
             .padding(.horizontal, 20)
 
           Button {
@@ -399,7 +399,7 @@ struct LensScene: View {
               .foregroundStyle(.white.opacity(0.35))
               .padding(14)
           }
-          .borderBeam(.medium, palette: .mono, cornerRadius: 20, lensStrength: 6)
+          .beam(.medium, palette: .mono, cornerRadius: 20, lensStrength: 6)
           .padding(18)
       }
     }
@@ -454,7 +454,7 @@ struct CometCardScene: View {
                 .foregroundStyle(.secondary)
             }
           }
-          .borderBeam(.comet, palette: .ocean, cornerRadius: 20)
+          .beam(.comet, palette: .ocean, cornerRadius: 20)
           .padding(18)
       }
     }

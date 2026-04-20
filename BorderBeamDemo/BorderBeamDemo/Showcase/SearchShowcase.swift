@@ -1,5 +1,5 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 /// Workspace-search experience modeled after GitHub / Linear / Notion.
 /// Line ocean beam on the search bar; an adaptive grid of result cards
@@ -17,7 +17,7 @@ struct SearchShowcase: View {
         )
 
         searchField
-          .borderBeam(.line, palette: .ocean, active: queryFocused, cornerRadius: 16)
+          .beam(.line, palette: .ocean, active: queryFocused, cornerRadius: 16)
 
         filterChips
 
@@ -131,9 +131,9 @@ private struct SearchResult: Identifiable {
   static let sample: [SearchResult] = [
     SearchResult(
       icon: "swift", iconColor: .orange,
-      title: "BorderBeam.swift",
+      title: "Beam.swift",
       kind: "Swift · public",
-      snippet: "public extension View { func borderBeam(...) -> some View { ... } }"
+      snippet: "public extension View { func beam(...) -> some View { ... } }"
     ),
     SearchResult(
       icon: "doc.richtext", iconColor: .blue,
@@ -145,7 +145,7 @@ private struct SearchResult: Identifiable {
       icon: "cube", iconColor: .purple,
       title: "RoundedRectangle snippets",
       kind: "Components",
-      snippet: "A collection of shape mocks that pair well with .borderBeam()"
+      snippet: "A collection of shape mocks that pair well with .beam()"
     ),
     SearchResult(
       icon: "sparkles", iconColor: .pink,

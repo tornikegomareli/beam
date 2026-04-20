@@ -14,7 +14,7 @@
 //
 // Layout contract
 // ---------------
-// The palettes array must appear in the SAME order as `BorderBeamPalette`'s
+// The palettes array must appear in the SAME order as `BeamPalette`'s
 // enum cases, because the shader indexes `variant * N + i` where `variant`
 // is the enum's raw value. If you reorder, update the Swift enum too.
 
@@ -586,7 +586,7 @@ let repoRoot: URL = {
   return scriptPath.deletingLastPathComponent().deletingLastPathComponent()
 }()
 
-let shadersDir = repoRoot.appendingPathComponent("Sources/BorderBeam/Shaders")
+let shadersDir = repoRoot.appendingPathComponent("Sources/Beam/Shaders")
 
 let fileRegions: [(String, [String: String])] = [
   (shadersDir.appendingPathComponent("Medium.metal").path, [

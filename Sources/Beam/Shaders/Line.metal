@@ -475,7 +475,7 @@ static float3 renderLineBloomCenter(
 //   • bloom  — wider radial mask at beam center with colored spots, spike streaks,
 //              and a central "hot dot" for the beam head
 
-[[ stitchable ]] half4 borderBeamLine(
+[[ stitchable ]] half4 beamLine(
   float2 position,
   float4 rect,       // (sizeW, sizeH, cornerRadius, borderWidth)
   float4 timing,     // (time, duration, brightness, saturation)

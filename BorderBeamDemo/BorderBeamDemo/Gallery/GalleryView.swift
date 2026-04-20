@@ -57,7 +57,7 @@ struct GalleryView: View {
         .frame(maxWidth: .infinity)
       }
       .background(Color.black.ignoresSafeArea())
-      .navigationTitle("BorderBeam")
+      .navigationTitle("Beam")
       .navigationBarTitleDisplayMode(.large)
     }
   }

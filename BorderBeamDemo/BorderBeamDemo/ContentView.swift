@@ -31,7 +31,7 @@ struct ContentView: View {
         row(.playground)
       }
     }
-    .navigationTitle("BorderBeam")
+    .navigationTitle("Beam")
     .listStyle(.sidebar)
   }
 

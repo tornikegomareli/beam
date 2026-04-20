@@ -1,5 +1,5 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 /// Full-screen iPad-sized scene modeled on an AI prompt composer. The large
 /// medium-colorful beam draws the eye to the active text-entry surface; the
@@ -17,7 +17,7 @@ struct ComposerShowcase: View {
 
         composer
           .frame(height: 150)
-          .borderBeam(.medium, palette: .colorful, cornerRadius: 22)
+          .beam(.medium, palette: .colorful, cornerRadius: 22)
 
         suggestions
 

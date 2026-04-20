@@ -138,7 +138,7 @@ static float smallInnerMask(float a) {
 // small elements don't benefit from the 28pt corner-carving behaviour), and
 // runs the same stroke + bloom composition.
 
-[[ stitchable ]] half4 borderBeamSmall(
+[[ stitchable ]] half4 beamSmall(
   float2 position,
   float4 rect,       // (sizeW, sizeH, cornerRadius, borderWidth)
   float4 timing,     // (time, duration, brightness, saturation)

@@ -16,15 +16,15 @@ import SwiftUI
 /// Single helper that renders the appropriate sample shape for each size and
 /// wraps it in a themed background. Keeps each `#Preview` to one line.
 private struct BeamPreviewCard: View {
-    let size: BorderBeamSize
-    let palette: BorderBeamPalette
-    let theme: BorderBeamTheme
+    let size: BeamSize
+    let palette: BeamPalette
+    let theme: BeamTheme
 
     var body: some View {
         ZStack {
             backgroundColor.ignoresSafeArea()
             sample
-                .borderBeam(size, palette: palette, theme: theme)
+                .beam(size, palette: palette, theme: theme)
         }
         .frame(width: canvasSize.width, height: canvasSize.height)
     }

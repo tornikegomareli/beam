@@ -1,5 +1,5 @@
 import SwiftUI
-import BorderBeam
+import Beam
 
 /// Split-layout upgrade page. On iPad landscape / regular width the feature
 /// list sits on the left and the pricing card on the right; on compact width
@@ -12,7 +12,7 @@ struct UpgradeShowcase: View {
     ShowcaseContainer(maxContentWidth: 1100) {
       VStack(alignment: .leading, spacing: 36) {
         ShowcaseHeader(
-          title: "Upgrade to BorderBeam Pro",
+          title: "Upgrade to Beam Pro",
           subtitle: "Unlimited Metal beams, early access to new sizes, and pro-tier support."
         )
 
@@ -148,7 +148,7 @@ struct UpgradeShowcase: View {
     .padding(24)
     .frame(maxWidth: .infinity)
     .background(showcaseElevatedFill, in: RoundedRectangle(cornerRadius: 24))
-    .borderBeam(.medium, palette: .sunset, cornerRadius: 24)
+    .beam(.medium, palette: .sunset, cornerRadius: 24)
   }
 
   private func pricingBullet(_ text: String) -> some View {

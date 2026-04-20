@@ -18,7 +18,7 @@ import SwiftUI
 /// name-match uniforms, so a mismatch silently reads garbage.
 enum ShaderDispatch {
   static func shader(
-    size: BorderBeamSize,
+    size: BeamSize,
     pixelSize: CGSize,
     cornerRadius: CGFloat,
     borderWidth: CGFloat,
@@ -84,12 +84,12 @@ enum ShaderDispatch {
     return Shader(function: function, arguments: args)
   }
 
-  private static func entryPointName(for size: BorderBeamSize) -> String {
+  private static func entryPointName(for size: BeamSize) -> String {
     switch size {
-    case .medium: return "borderBeam"
-    case .small:  return "borderBeamSmall"
-    case .line:   return "borderBeamLine"
-    case .comet:  return "borderBeamComet"
+    case .medium: return "beam"
+    case .small:  return "beamSmall"
+    case .line:   return "beamLine"
+    case .comet:  return "beamComet"
     }
   }
 

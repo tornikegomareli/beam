@@ -3,7 +3,7 @@ import Foundation
 /// Ambient appearance the beam is rendered for. Controls opacity stops,
 /// saturation, and which ink color (white vs. black) is blended into the
 /// conic highlight.
-public enum BorderBeamTheme: Sendable {
+public enum BeamTheme: Sendable {
   /// Full-saturation colors with white conic highlights at the beam head.
   /// Higher default opacities (stroke 0.48, bloom 0.80). Best on dark surfaces.
   case dark

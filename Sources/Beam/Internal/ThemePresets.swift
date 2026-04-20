@@ -28,7 +28,7 @@ struct ThemePresets {
   let inkLuma: Double
   let inkAlphaScale: Double
 
-  static func resolve(size: BorderBeamSize, theme: BorderBeamTheme) -> ThemePresets {
+  static func resolve(size: BeamSize, theme: BeamTheme) -> ThemePresets {
     let isDark = theme == .dark
 
     let strokeOp: Double = {
