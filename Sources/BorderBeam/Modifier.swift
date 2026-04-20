@@ -36,6 +36,11 @@ public extension View {
   ///   - duration: seconds per full rotation around the border. Defaults to
   ///     1.96 s for medium/small, 2.4 s for line.
   ///   - strength: overall opacity multiplier in `0...1`. `1.0` is full intensity.
+  ///   - pulse: a hashable token (typically an incrementing counter, message
+  ///     ID, or UUID) that triggers a one-shot lap whenever its value
+  ///     changes. Use for transient affordances — a message landed, a file
+  ///     saved, a task finished. Independent of `active`: works even when
+  ///     `active: false`.
   ///   - onActivate: called when the fade-in completes (or immediately when
   ///     Reduce Motion is on and the beam snaps in).
   ///   - onDeactivate: called when the fade-out completes (or immediately
@@ -49,6 +54,7 @@ public extension View {
     cornerRadius: CGFloat? = nil,
     duration: Double? = nil,
     strength: Double = 1.0,
+    pulse: AnyHashable? = nil,
     onActivate: (() -> Void)? = nil,
     onDeactivate: (() -> Void)? = nil
   ) -> some View {
@@ -65,6 +71,7 @@ public extension View {
       strength: strength,
       presets: presets,
       active: active,
+      pulse: pulse,
       onActivate: onActivate,
       onDeactivate: onDeactivate
     ))
@@ -93,6 +100,9 @@ struct BorderBeamModifier: ViewModifier {
   let strength: Double
   let presets: ThemePresets
   let active: Bool
+  /// Optional one-shot pulse token. Each time this value changes, the beam
+  /// plays a single lap regardless of `active`. nil → no pulse behaviour.
+  let pulse: AnyHashable?
   let onActivate: (() -> Void)?
   let onDeactivate: (() -> Void)?
 
@@ -136,6 +146,41 @@ struct BorderBeamModifier: ViewModifier {
         visualOpacity = isActive ? 1.0 : 0.0
       }
       scheduleCallback(isActive: isActive)
+    }
+    .onChange(of: pulse) { _, newValue in
+      // `.onChange` only fires when the value differs from the previous
+      // render, so first-mount doesn't trigger a ghost pulse.
+      guard newValue != nil else { return }
+      triggerPulse()
+    }
+  }
+
+  /// Plays a single lap: fade in → hold for one full beam rotation → fade
+  /// out. Reuses the same `transitionGeneration` token as `active` so a
+  /// rapid pulse-then-active-flip doesn't cross wires with the fade-out
+  /// task from a previous pulse.
+  private func triggerPulse() {
+    transitionGeneration += 1
+    let generation = transitionGeneration
+
+    withAnimation(fadeInAnimation) { visualOpacity = 1.0 }
+
+    let inDelay: TimeInterval = reduceMotion ? 0 : 0.6
+    let holdDelay: TimeInterval = duration
+    let outDelay: TimeInterval = reduceMotion ? 0 : 0.5
+
+    Task { @MainActor in
+      if inDelay > 0 { try? await Task.sleep(for: .seconds(inDelay)) }
+      guard generation == transitionGeneration else { return }
+      onActivate?()
+
+      try? await Task.sleep(for: .seconds(holdDelay))
+      guard generation == transitionGeneration else { return }
+      withAnimation(fadeOutAnimation) { visualOpacity = 0.0 }
+
+      if outDelay > 0 { try? await Task.sleep(for: .seconds(outDelay)) }
+      guard generation == transitionGeneration else { return }
+      onDeactivate?()
     }
   }
 
