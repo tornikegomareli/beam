@@ -10,7 +10,7 @@
 [![SPM](https://img.shields.io/badge/Swift_Package_Manager-compatible-E8E2D6.svg?style=flat)](https://swift.org/package-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-A78BFA.svg?style=flat)](LICENSE)
 
-One SwiftUI modifier. Every `View` gets a hue-shifting, palette-driven beam traveling its border.
+One SwiftUI modifier. Every `View` gets a shifting, palette-driven beautiful beam traveling its border.
 
 <br>
 
