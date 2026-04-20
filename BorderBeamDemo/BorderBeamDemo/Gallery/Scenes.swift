@@ -300,3 +300,37 @@ struct CircleShapeScene: View {
     }
   }
 }
+
+// MARK: - Glyphs
+
+/// Large headline text filled with the traveling beam. Exercises
+/// `.beamFill(...)` — the glyph outlines act as the mask so the letters
+/// appear to catch the light as the beam sweeps through them.
+struct TextGlyphScene: View {
+  var body: some View {
+    DemoCard(title: "Text fill", tag: "Beam fill · Colorful") {
+      ZStack {
+        sceneBackground()
+        Text("GENERATE")
+          .font(.system(size: 52, weight: .black, design: .rounded))
+          .tracking(2)
+          .beamFill(palette: .colorful)
+      }
+    }
+  }
+}
+
+/// SF Symbol filled with the beam. Same mechanism as text — the symbol
+/// path masks the shader output.
+struct SymbolGlyphScene: View {
+  var body: some View {
+    DemoCard(title: "Symbol fill", tag: "Beam fill · Sunset") {
+      ZStack {
+        sceneBackground()
+        Image(systemName: "sparkles")
+          .font(.system(size: 100, weight: .semibold))
+          .beamFill(palette: .sunset)
+      }
+    }
+  }
+}

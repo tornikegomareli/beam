@@ -33,6 +33,12 @@ struct GalleryView: View {
             CapsuleShapeScene()
             CircleShapeScene()
           }
+
+          sectionHeader("Glyphs")
+          LazyVGrid(columns: gridColumns, spacing: 20) {
+            TextGlyphScene()
+            SymbolGlyphScene()
+          }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
