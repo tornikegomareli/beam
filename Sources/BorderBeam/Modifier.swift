@@ -3,6 +3,46 @@ import SwiftUI
 // MARK: - Public API
 
 public extension View {
+  /// Renders a single frozen frame of the border beam at `phase`.
+  ///
+  /// Designed for contexts that can't drive a continuous animation — most
+  /// importantly WidgetKit (timeline entries) and the lock screen, where
+  /// `TimelineView(.animation)` freezes at whatever `date` was last supplied.
+  /// The same Metal shader is used, so the output is pixel-identical to the
+  /// corresponding frame of the animated modifier at `time = phase`.
+  ///
+  /// ```swift
+  /// // In a Widget's EntryView:
+  /// VStack { ... }
+  ///   .borderBeam(.medium, palette: .ocean, phase: entry.phase)
+  /// ```
+  ///
+  /// To animate *between* widget timeline entries, vary `phase` across entries
+  /// — WidgetKit will cross-fade the snapshots. A full rotation is `0...1`.
+  ///
+  /// - Parameters:
+  ///   - phase: beam position along its rotation cycle in `0...1`. `0` matches
+  ///     the animated modifier at `time = 0`; `0.5` is halfway around.
+  func borderBeam(
+    _ size: BorderBeamSize = .medium,
+    palette: BorderBeamPalette = .colorful,
+    theme: BorderBeamTheme = .dark,
+    phase: Double,
+    cornerRadius: CGFloat? = nil,
+    strength: Double = 1.0
+  ) -> some View {
+    let presets = ThemePresets.resolve(size: size, theme: theme)
+    let resolvedRadius = cornerRadius ?? (size == .small ? 18 : 16)
+    return modifier(BorderBeamStaticModifier(
+      size: size,
+      palette: palette,
+      cornerRadius: resolvedRadius,
+      strength: strength,
+      presets: presets,
+      phase: phase
+    ))
+  }
+
   /// Overlays an animated, metal-shader-rendered border beam on the receiver.
   ///
   /// ```swift
@@ -223,7 +263,7 @@ struct BorderBeamModifier: ViewModifier {
 /// Timing and tuning values that are shared across every beam instance. Kept
 /// as a single namespace so contributors adjusting the feel of the animation
 /// have one obvious place to look.
-private enum BorderBeamTiming {
+enum BorderBeamTiming {
   /// Half-range of the hue oscillation in degrees. The beam's hue sweeps
   /// `-hueRangeDeg ↔ +hueRangeDeg` once per `hueCycleSeconds`.
   static let hueRangeDeg: Double = 30
@@ -252,5 +292,60 @@ private enum BorderBeamTiming {
     }
     let shorter = Double(min(pixelSize.width, pixelSize.height))
     return max(1.0, shorter / reference)
+  }
+}
+
+// MARK: - Static (widget / snapshot) modifier
+
+/// Implementation detail of `.borderBeam(..., phase:)`. Renders a single frame
+/// of the shader without a `TimelineView`, because WidgetKit and the lock
+/// screen don't drive `.animation` schedules — the same approach as the
+/// animated modifier would freeze at a single `date` anyway, so we skip the
+/// intermediate view and wire the phase straight into the shader's `time`
+/// uniform (`duration` pinned at `1` so `fract(time/duration) = phase`).
+struct BorderBeamStaticModifier: ViewModifier {
+  let size: BorderBeamSize
+  let palette: BorderBeamPalette
+  let cornerRadius: CGFloat
+  let strength: Double
+  let presets: ThemePresets
+  let phase: Double
+
+  private var monoMultiplier: Double { palette == .mono ? 0.5 : 1.0 }
+
+  func body(content: Content) -> some View {
+    content.overlay {
+      GeometryReader { proxy in
+        Rectangle()
+          .foregroundStyle(makeShader(pixelSize: proxy.size))
+      }
+      .allowsHitTesting(false)
+      .accessibilityHidden(true)
+    }
+  }
+
+  private func makeShader(pixelSize: CGSize) -> Shader {
+    let paletteScale = BorderBeamTiming.paletteScale(size: size, pixelSize: pixelSize)
+    return ShaderDispatch.shader(
+      size: size,
+      pixelSize: pixelSize,
+      cornerRadius: cornerRadius,
+      borderWidth: 1,
+      time: phase,
+      duration: 1.0,
+      strokeOpacity: presets.strokeOpacity * monoMultiplier,
+      innerOpacity: presets.innerOpacity * monoMultiplier,
+      bloomOpacity: presets.bloomOpacity * monoMultiplier,
+      strength: strength,
+      brightness: BorderBeamTiming.brightness,
+      saturation: presets.saturation,
+      variant: Float(palette.rawValue),
+      inkLuma: presets.inkLuma,
+      innerShadowAlpha: presets.innerShadowAlpha,
+      inkAlphaScale: presets.inkAlphaScale,
+      hueCos: 1.0,
+      hueSin: 0.0,
+      paletteScale: paletteScale
+    )
   }
 }
