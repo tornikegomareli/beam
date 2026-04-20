@@ -39,6 +39,11 @@ struct GalleryView: View {
             TextGlyphScene()
             SymbolGlyphScene()
           }
+
+          sectionHeader("Motion")
+          LazyVGrid(columns: gridColumns, spacing: 20) {
+            CometCardScene()
+          }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 28)

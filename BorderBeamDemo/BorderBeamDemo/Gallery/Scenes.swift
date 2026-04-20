@@ -334,3 +334,36 @@ struct SymbolGlyphScene: View {
     }
   }
 }
+
+// MARK: - Motion
+
+/// Comet variant — a bright head chasing its own trail around the card.
+/// Contrast this against `AIPromptScene` (medium arc on a similar card)
+/// to see the difference: the comet is a single point in motion, the
+/// medium beam is a wide lit arc.
+struct CometCardScene: View {
+  var body: some View {
+    DemoCard(title: "Comet", tag: "Comet · Ocean") {
+      ZStack {
+        sceneBackground()
+        RoundedRectangle(cornerRadius: 20)
+          .fill(sceneSurfaceFill)
+          .frame(height: 148)
+          .overlay {
+            VStack(spacing: 6) {
+              Image(systemName: "bell.badge.fill")
+                .font(.system(size: 28))
+                .foregroundStyle(.blue)
+              Text("New message")
+                .font(.system(.callout, design: .rounded, weight: .semibold))
+              Text("Tap to read")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+          }
+          .borderBeam(.comet, palette: .ocean, cornerRadius: 20)
+          .padding(18)
+      }
+    }
+  }
+}
