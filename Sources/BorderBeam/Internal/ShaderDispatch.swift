@@ -89,6 +89,7 @@ enum ShaderDispatch {
     case .medium: return "borderBeam"
     case .small:  return "borderBeamSmall"
     case .line:   return "borderBeamLine"
+    case .comet:  return "borderBeamComet"
     }
   }
 }

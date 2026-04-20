@@ -35,6 +35,9 @@ struct ThemePresets {
       switch size {
       case .line: return 0.72
       case .medium, .small: return isDark ? 0.48 : 0.33
+      // Comet's head is a small bright point — push stroke opacity
+      // higher so the core pops against the dim trail.
+      case .comet: return isDark ? 0.62 : 0.42
       }
     }()
 
@@ -43,6 +46,7 @@ struct ThemePresets {
       case .medium: return isDark ? 0.27 : 0.14
       case .small:  return isDark ? 0.30 : 0.15
       case .line:   return 0.10
+      case .comet:  return isDark ? 0.22 : 0.12
       }
     }()
 

@@ -260,9 +260,9 @@ private enum BorderBeamTiming {
   static func paletteScale(size: BorderBeamSize, pixelSize: CGSize) -> Double {
     let reference: Double
     switch size {
-    case .medium: reference = 144
-    case .small:  reference = 36
-    case .line:   reference = 40
+    case .medium, .comet: reference = 144
+    case .small:          reference = 36
+    case .line:           reference = 40
     }
     let shorter = Double(min(pixelSize.width, pixelSize.height))
     return max(1.0, shorter / reference)

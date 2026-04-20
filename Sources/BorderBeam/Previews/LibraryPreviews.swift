@@ -39,7 +39,7 @@ private struct BeamPreviewCard: View {
 
     private var canvasSize: CGSize {
         switch size {
-        case .medium: return CGSize(width: 800, height: 400)
+        case .medium, .comet: return CGSize(width: 800, height: 400)
         case .small:  return CGSize(width: 400, height: 250)
         case .line:   return CGSize(width: 800, height: 300)
         }
@@ -48,7 +48,7 @@ private struct BeamPreviewCard: View {
     @ViewBuilder
     private var sample: some View {
         switch size {
-        case .medium: mediumSample
+        case .medium, .comet: mediumSample
         case .small:  smallSample
         case .line:   lineSample
         }
