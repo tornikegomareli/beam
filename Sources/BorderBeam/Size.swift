@@ -18,4 +18,14 @@ public enum BorderBeamSize: Sendable {
   /// bloom halo. Designed for search fields, text inputs, and status bars.
   /// Default corner radius 16, rotation period 2.4 s.
   case line
+
+  /// Single bright spark that whips around the border with a fading trail
+  /// behind it. Unlike `.medium` — which lights a wide angular arc — the
+  /// comet is a focused "head" followed by a soft gradient. Nothing lights
+  /// ahead of the head.
+  ///
+  /// Best for one-shot affordances: a notification landing, a message sent,
+  /// a task finishing. Pair with `active: isDone` so the comet fades out
+  /// after one or two laps.
+  case comet
 }
