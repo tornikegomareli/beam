@@ -36,6 +36,12 @@ public extension View {
   ///   - duration: seconds per full rotation around the border. Defaults to
   ///     1.96 s for medium/small, 2.4 s for line.
   ///   - strength: overall opacity multiplier in `0...1`. `1.0` is full intensity.
+  ///   - lensStrength: pixel magnitude of a liquid-glass distortion that
+  ///     warps the content *under* the beam as the head passes over it.
+  ///     `0` (default) disables the lens. Try `3...6` for a subtle pull;
+  ///     higher values read as an obvious bulge. Applied to the receiver
+  ///     before the beam overlay, so it only warps what's behind the beam,
+  ///     not the beam itself.
   ///   - pulse: a hashable token (typically an incrementing counter, message
   ///     ID, or UUID) that triggers a one-shot lap whenever its value
   ///     changes. Use for transient affordances — a message landed, a file
@@ -54,6 +60,7 @@ public extension View {
     cornerRadius: CGFloat? = nil,
     duration: Double? = nil,
     strength: Double = 1.0,
+    lensStrength: Double = 0,
     pulse: AnyHashable? = nil,
     onActivate: (() -> Void)? = nil,
     onDeactivate: (() -> Void)? = nil
@@ -69,6 +76,7 @@ public extension View {
       cornerRadiusFallback: fallbackRadius,
       duration: resolvedDuration,
       strength: strength,
+      lensStrength: lensStrength,
       presets: presets,
       active: active,
       pulse: pulse,
@@ -98,6 +106,10 @@ struct BorderBeamModifier: ViewModifier {
   let cornerRadiusFallback: CGFloat
   let duration: Double
   let strength: Double
+  /// Max pixel offset applied to the receiver by the lens distortion
+  /// shader. `0` skips the distortion effect entirely. Keep small (3–6)
+  /// for a subtle "glass moving over a surface" look.
+  let lensStrength: Double
   let presets: ThemePresets
   let active: Bool
   /// Optional one-shot pulse token. Each time this value changes, the beam
@@ -119,13 +131,21 @@ struct BorderBeamModifier: ViewModifier {
   /// `onDeactivate` after a later fade-in already started.
   @State private var transitionGeneration: Int = 0
 
+  /// Content's rendered size, measured via a background GeometryReader.
+  /// Used by the lens distortion shader to locate the beam head position.
+  @State private var measuredContentSize: CGSize = .zero
+
   /// Overall opacity multiplier applied to the `.mono` palette. Bright
   /// grayscale values read louder than saturated hues at the same alpha,
   /// so we halve the opacity to keep the mono beam visually matched.
   private var monoMultiplier: Double { palette == .mono ? 0.5 : 1.0 }
 
   func body(content: Content) -> some View {
-    content.overlay {
+    // Apply the optional lens distortion to the receiver *before* the
+    // overlay — that way the lens only warps the receiver's content, not
+    // the beam itself sitting on top of it.
+    lensApplied(content)
+      .overlay {
       Group {
         if visualOpacity > 0.001 {
           beamOverlay
@@ -221,6 +241,37 @@ struct BorderBeamModifier: ViewModifier {
         Rectangle()
           .foregroundStyle(makeShader(pixelSize: proxy.size, time: t))
       }
+    }
+  }
+
+  /// Wraps `content` in a distortionEffect that warps its pixels along
+  /// with the beam's head position. When `lensStrength` is 0 or the beam
+  /// is faded out the effect is fully disabled — no per-frame shader eval,
+  /// no max-offset padding, no content re-render.
+  @ViewBuilder
+  private func lensApplied(_ content: Content) -> some View {
+    if lensStrength > 0 && !reduceMotion && visualOpacity > 0.001 {
+      TimelineView(.animation) { timeline in
+        let t = timeline.date.timeIntervalSinceReferenceDate
+          .truncatingRemainder(dividingBy: 1000)
+        content
+          .distortionEffect(
+            ShaderDispatch.lensShader(
+              pixelSize: measuredContentSize,
+              time: t,
+              duration: duration,
+              strength: lensStrength * visualOpacity
+            ),
+            maxSampleOffset: CGSize(width: lensStrength, height: lensStrength)
+          )
+          .background {
+            GeometryReader { proxy in
+              Color.clear.task(id: proxy.size) { measuredContentSize = proxy.size }
+            }
+          }
+      }
+    } else {
+      content
     }
   }
 
