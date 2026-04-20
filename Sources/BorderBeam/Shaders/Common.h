@@ -12,6 +12,22 @@ static inline float sdRoundedRect(float2 p, float2 center, float2 b, float r) {
   return min(max(q.x, q.y), 0.0) + length(max(q, float2(0.0))) - r;
 }
 
+/// Shape-dispatching SDF. `shapeType`:
+///   0 — rounded rect (uses `cornerRadius`)
+///   1 — capsule       (ignores `cornerRadius`, uses `min(halfSize)`)
+///   2 — circle        (inscribed circle; non-square frames get unlit padding)
+static inline float sdBeamShape(float2 p, float2 center, float2 halfSize, float cornerRadius, int shapeType) {
+  if (shapeType == 2) {
+    float r = min(halfSize.x, halfSize.y);
+    return length(p - center) - r;
+  }
+  if (shapeType == 1) {
+    float r = min(halfSize.x, halfSize.y);
+    return sdRoundedRect(p, center, halfSize, r);
+  }
+  return sdRoundedRect(p, center, halfSize, cornerRadius);
+}
+
 /// Fract-wrapped angle around the center of `size`, offset by the beam's
 /// current position along its rotation cycle.
 static inline float beamAngleFract(float2 position, float2 size, float time, float duration) {

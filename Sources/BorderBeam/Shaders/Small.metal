@@ -156,11 +156,12 @@ static float smallInnerMask(float a) {
   float inkLuma = theme.y, innerShadowAlpha = theme.z, inkAlphaScale = theme.w;
   float hueCos = hueAndScale.x, hueSin = hueAndScale.y;
   float paletteScale = hueAndScale.z;
+  int shapeType = int(hueAndScale.w);
 
   float2 size = float2(sizeW, sizeH);
   float2 center = size * 0.5;
 
-  float sdfOuter = sdRoundedRect(position, center, size * 0.5, cornerRadius);
+  float sdfOuter = sdBeamShape(position, center, size * 0.5, cornerRadius, shapeType);
   if (sdfOuter > 0.0) return half4(0.0);
   float distFromEdge = -sdfOuter;
 
