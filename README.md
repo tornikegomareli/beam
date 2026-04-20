@@ -8,7 +8,7 @@ One SwiftUI modifier. Every `View` gets a shifting, palette-driven beautiful bea
 
 <br>
 
-https://github.com/user-attachments/assets/5b7fb2d5-a89e-40cb-98d5-d2164adf47a9
+https://github.com/user-attachments/assets/69bfff5d-a579-41fa-b219-b69d64cd98af
 
 </div>
 
