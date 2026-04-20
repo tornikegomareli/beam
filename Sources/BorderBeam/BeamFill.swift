@@ -3,11 +3,11 @@ import SwiftUI
 // MARK: - Public API
 
 public extension View {
-  /// Paints the receiver's rendered shape with the traveling beam effect
-  /// instead of overlaying it as a border. The view's own silhouette —
-  /// text glyphs, an SF Symbol, a `Shape` — acts as the natural mask, so
-  /// the beam appears to shine *through* the letterforms rather than
-  /// orbiting around them.
+  /// Paints the receiver's rendered shape with a dedicated glyph-fill
+  /// shader: a corner-anchored palette blend with a soft diagonal light
+  /// sweep running through it. Use on `Text`, `Image` (SF Symbol), or any
+  /// `Shape` — the receiver's silhouette masks the output so only the
+  /// glyph / symbol / shape pixels show the fill.
   ///
   /// ```swift
   /// Text("GENERATE")
@@ -23,34 +23,25 @@ public extension View {
   ///     .beamFill(palette: .ocean)
   /// ```
   ///
-  /// The beam operates on the view's bounding box. `.small` (default)
-  /// uses a wide angular window that reads best when the lit area is the
-  /// interior rather than just the border.
+  /// Distinct from `.borderBeam(...)`, which overlays a traveling beam
+  /// around the view's edge. This modifier fills the view itself.
   ///
   /// - Parameters:
-  ///   - size: which beam variant to sample. Defaults to `.small`.
   ///   - palette: one of `.colorful`, `.mono`, `.ocean`, `.sunset`.
-  ///   - theme: `.dark` (default) or `.light`.
   ///   - active: fade in/out. Matches `.borderBeam` semantics (0.6 s in,
-  ///     0.5 s out).
-  ///   - duration: seconds per sweep. Defaults to `1.96`.
-  ///   - strength: overall opacity multiplier in `0...1`.
+  ///     0.5 s out). Reduce Motion snaps without easing.
+  ///   - duration: seconds per light-sweep pass. Defaults to `2.4`.
+  ///   - strength: overall intensity multiplier in `0...1`.
   func beamFill(
-    _ size: BorderBeamSize = .small,
     palette: BorderBeamPalette = .colorful,
-    theme: BorderBeamTheme = .dark,
     active: Bool = true,
-    duration: Double? = nil,
+    duration: Double = 2.4,
     strength: Double = 1.0
   ) -> some View {
-    let presets = ThemePresets.resolve(size: size, theme: theme)
-    let resolvedDuration = duration ?? (size == .line ? 2.4 : 1.96)
-    return modifier(BeamFillModifier(
-      size: size,
+    modifier(BeamFillModifier(
       palette: palette,
-      duration: resolvedDuration,
+      duration: duration,
       strength: strength,
-      presets: presets,
       active: active
     ))
   }
@@ -58,24 +49,20 @@ public extension View {
 
 // MARK: - ViewModifier
 
-/// Implementation detail of `.beamFill(...)`. Unlike `BorderBeamModifier`,
-/// this applies the shader via `foregroundStyle` so the host view's own
-/// shape becomes the beam's visible area. There's no overlay — the beam
-/// is the view's fill color.
+/// Implementation of `.beamFill(...)`. Applies the dedicated glyph-fill
+/// shader via `foregroundStyle` — SwiftUI masks the shader's output by
+/// the receiver view's own silhouette (text glyphs, symbol path, Shape
+/// outline), so the fill shows only where the view would have rendered
+/// its foreground.
 private struct BeamFillModifier: ViewModifier {
-  let size: BorderBeamSize
   let palette: BorderBeamPalette
   let duration: Double
   let strength: Double
-  let presets: ThemePresets
   let active: Bool
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var pixelSize: CGSize = .zero
   @State private var visualOpacity: Double = 0
-
-  /// See `BorderBeamModifier.monoMultiplier` — same rationale applies.
-  private var monoMultiplier: Double { palette == .mono ? 0.5 : 1.0 }
 
   func body(content: Content) -> some View {
     TimelineView(.animation(paused: reduceMotion)) { timeline in
@@ -110,37 +97,16 @@ private struct BeamFillModifier: ViewModifier {
     let hueCos = cos(hueShiftRad)
     let hueSin = sin(hueShiftRad)
 
-    // Grow the palette with the smaller dimension so small glyphs (a short
-    // SF Symbol) and tall headlines ("GENERATE" at 80pt) both get adequate
-    // color spread. Uses the same reference scale as `.borderBeam`.
-    let reference: Double = (size == .small) ? 36 : ((size == .line) ? 40 : 144)
-    let shorter = Double(min(pixelSize.width, pixelSize.height))
-    let paletteScale = max(1.0, shorter / reference)
-
-    return ShaderDispatch.shader(
-      size: size,
+    return ShaderDispatch.glyphFillShader(
       pixelSize: pixelSize,
-      // No rounded corners — the beam's bounding box matches the glyph
-      // layout, which isn't a rounded rect. A regular rect SDF avoids
-      // accidentally clipping glyph pixels at the corners.
-      cornerRadius: 0,
-      borderWidth: 1,
       time: time,
       duration: duration,
-      strokeOpacity: presets.strokeOpacity * monoMultiplier,
-      innerOpacity: presets.innerOpacity * monoMultiplier,
-      bloomOpacity: presets.bloomOpacity * monoMultiplier,
       strength: strength,
-      brightness: 1.30,
-      saturation: presets.saturation,
+      brightness: 1.10,
+      saturation: 1.15,
       variant: Float(palette.rawValue),
-      inkLuma: presets.inkLuma,
-      innerShadowAlpha: presets.innerShadowAlpha,
-      inkAlphaScale: presets.inkAlphaScale,
       hueCos: hueCos,
-      hueSin: hueSin,
-      paletteScale: paletteScale,
-      shapeType: 0
+      hueSin: hueSin
     )
   }
 }
