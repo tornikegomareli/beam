@@ -2,7 +2,7 @@
 
 # Beam
 
-**Animated border beams for SwiftUI, rendered in Metal.**
+**Animated beams for SwiftUI, backed with Metal Shaders.**
 
 [![Swift 5.9+](https://img.shields.io/badge/Swift-5.9+-F05138.svg?style=flat&logo=swift&logoColor=white)](https://swift.org)
 [![iOS 17+](https://img.shields.io/badge/iOS-17%2B-007AFF.svg?style=flat&logo=apple&logoColor=white)](https://developer.apple.com/ios/)
@@ -11,7 +11,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-A78BFA.svg?style=flat)](LICENSE)
 
 One SwiftUI modifier. Every `View` gets a hue-shifting, palette-driven beam traveling its border.
-<br>Metal shaders. No assets, no images, no layer hacks — just `.beam(...)`.
 
 <br>
 
@@ -24,9 +23,9 @@ One SwiftUI modifier. Every `View` gets a hue-shifting, palette-driven beam trav
 
 ## Why
 
-UIKit and SwiftUI don't ship a "moving colorful border" primitive. The typical workaround is an `AngularGradient` + rotation + masking + blur — which animates the host view's hierarchy on every frame, thrashes layout, and still doesn't look right on rounded corners.
+UIKit and SwiftUI don't ship a "moving colorful border" primitive. The typical workaround is an `AngularGradient` + rotation + masking + blur — which animates the host view's hierarchy on every frame, and still doesn't look right on rounded corners.
 
-Beam renders the whole effect in a single `[[ stitchable ]]` Metal shader per size variant. The beam's geometry, palette, inner glow, stroke, and bloom all live on the GPU. SwiftUI just ticks a `TimelineView` and hands the shader the current time. No image assets, no `CADisplayLink`, no offscreen passes.
+Beam renders the whole effect in a single `[[ stitchable ]]` Metal shader per size variant. The beam's geometry, palette, inner glow, stroke, and bloom all live on the GPU. SwiftUI just ticks a `TimelineView` and hands the shader the current time.
 
 ## Install
 
@@ -55,13 +54,9 @@ struct ContentView: View {
 }
 ```
 
-Three lines, one modifier. That's the whole library surface.
-
 ---
 
-## API
-
-### Size variants
+## Size variants
 
 ```swift
 .beam(.medium)   // card-sized — full rounded-rect border
@@ -101,7 +96,7 @@ RoundedRectangle(cornerRadius: 24)
   .beam(shape: .roundedRect(cornerRadius: 24))
 ```
 
-### Active / inactive
+### You can control control activate and deactivate events 
 
 ```swift
 .beam(active: isGenerating,
@@ -110,27 +105,6 @@ RoundedRectangle(cornerRadius: 24)
 ```
 
 Fade-in is 0.6 s, fade-out 0.5 s. Callbacks fire at the end of each fade (or immediately under Reduce Motion, where transitions snap).
-
-### Pulse on demand
-
-```swift
-@State private var sentCount = 0
-
-Button("Send") { sentCount += 1 }
-
-Card()
-  .beam(.comet, active: false, pulse: sentCount)
-```
-
-Each time the `pulse` value changes, the beam fires a single lap and fades out. Pass a counter, a message ID, a UUID — any `AnyHashable`.
-
-### Liquid-glass lens
-
-```swift
-.beam(.medium, palette: .mono, lensStrength: 6)
-```
-
-Warps the content *under* the beam head as it passes. `lensStrength` is pixels of max radial displacement — try `3...6` for a subtle bulge, higher for an obvious glass-bead effect.
 
 ### Text & SF Symbol fills
 
@@ -149,77 +123,6 @@ Circle()
   .frame(width: 120, height: 120)
   .beamFill(palette: .ocean)
 ```
-
-Works on any view whose silhouette can act as a mask — text glyphs, SF Symbols, custom `Shape`s.
-
----
-
-## Accessibility
-
-- **Reduce Motion**: when the system preference is on, fade transitions snap and the Metal `TimelineView` is paused — the beam renders a single static frame.
-- **VoiceOver**: the overlay is marked `.accessibilityHidden(true)` — beams are decoration, not content.
-- **Low-power defaults**: rendering is fully suspended when `visualOpacity ≈ 0`, so inactive beams cost nothing.
-
----
-
-## API summary
-
-| Modifier / Type | Purpose |
-|-----------------|---------|
-| `.beam(_:palette:theme:active:shape:cornerRadius:duration:strength:lensStrength:pulse:onActivate:onDeactivate:)` | Overlay a traveling beam on the border. |
-| `.beamFill(palette:active:duration:strength:)` | Fill the receiver's glyphs / shape with a palette wash. |
-| `BeamSize` | `.medium` / `.small` / `.line` / `.comet` |
-| `BeamPalette` | `.colorful` / `.mono` / `.ocean` / `.sunset` |
-| `BeamShape` | `.roundedRect(cornerRadius:)` / `.capsule` / `.circle` |
-| `BeamTheme` | `.dark` / `.light` |
-
----
-
-## Demos
-
-<div align="center">
-
-**Spotlight** — Interactive playground: every mode, every palette, every shape, with live code
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_SPOTLIGHT -->
-
-<br>
-
-**Composer** — Chat-style input card with the full medium beam
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_COMPOSER -->
-
-<br>
-
-**Search** — Line beam tracing a search field underline
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_SEARCH -->
-
-<br>
-
-**Upgrade** — Sunset palette on a Pro upsell card
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_UPGRADE -->
-
-<br>
-
-**Generating** — Active state bound to a streaming task
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_GENERATING -->
-
-<br>
-
-**Glass lens** — Content bulges as the beam head sweeps over a dot field
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_LENS -->
-
-<br>
-
-**Glyphs** — Text and SF Symbols filled with `.beamFill`
-
-<!-- https://github.com/user-attachments/assets/REPLACE_ME_GLYPHS -->
-
-</div>
 
 ---
 
@@ -244,10 +147,6 @@ Open `BorderBeamDemo/BeamDemo.xcodeproj`, pick a simulator, run.
 - Xcode 15+
 
 ---
-
-## Contributing
-
-Ideas, bug reports, PRs — all welcome. The Metal shaders live in `Sources/Beam/Shaders/` and each has a header-comment explaining its layer composition. The palette tables are single-sourced in `Scripts/GeneratePalettes.swift`; regenerate with `swift Scripts/GeneratePalettes.swift` after editing.
 
 ## License
 
